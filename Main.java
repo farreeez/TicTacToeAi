@@ -8,6 +8,8 @@ public class Main extends JPanel implements ActionListener {
             { sq.e, sq.e, sq.e },
             { sq.e, sq.e, sq.e } };
 
+    private sq currentTurn = sq.x;
+
     public Main() {
         setFocusable(true);
         setPreferredSize(new Dimension(600, 700));
@@ -32,6 +34,30 @@ public class Main extends JPanel implements ActionListener {
         g.drawLine(400, 100, 400, 700);
         g.drawLine(0, 300, 600, 300);
         g.drawLine(0, 500, 600, 500);
+
+        g2.setStroke(new BasicStroke(15));
+        if (currentTurn.equals(sq.x)) {
+            g.drawLine(25, 25, 75, 75);
+            g.drawLine(75, 25, 25, 75);
+        } else {
+            g.drawOval(25,25,50,50);
+        }
+
+        g.setColor(Color.black);
+        g2.setStroke(new BasicStroke(30));
+        int radius = 100;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j].equals(sq.o)) {
+                    g.drawOval(j * 200 + 100 - radius / 2, i * 200 + 200 - radius / 2, radius, radius);
+                } else if (board[i][j].equals(sq.x)) {
+                    g.drawLine(j * 200 + 100 - radius / 2, i * 200 + 200 - radius / 2, j * 200 + 100 + radius / 2,
+                            i * 200 + 200 + radius / 2);
+                    g.drawLine(j * 200 + 100 - radius / 2, i * 200 + 200 + radius / 2, j * 200 + 100 + radius / 2,
+                            i * 200 + 200 - radius / 2);
+                }
+            }
+        }
     }
 
     @Override
