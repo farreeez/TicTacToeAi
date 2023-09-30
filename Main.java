@@ -1,9 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Main extends JPanel {
+public class Main extends JPanel implements ActionListener {
     private static sq[][] board = { { sq.e, sq.e, sq.e },
             { sq.e, sq.e, sq.e },
             { sq.e, sq.e, sq.e } };
@@ -11,6 +13,7 @@ public class Main extends JPanel {
     private static sq currentTurn = sq.x;
     static int fullSqrCount = 0;
     private static JFrame frame = new JFrame("Big Tac");
+    private static JButton button = new JButton("Restart", null);
 
     private boolean playing = true;
 
@@ -23,11 +26,14 @@ public class Main extends JPanel {
                 gameCode(e.getX(), e.getY());
             }
         });
+        button.setBounds(475, 10, 100, 50);
+        button.addActionListener(this);
     }
 
     public static void main(String[] args) {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Main game = new Main();
+        game.add(button);
         frame.add(game);
         frame.pack();
         frame.setVisible(true);
@@ -150,11 +156,27 @@ public class Main extends JPanel {
         if (x != 0) {
             playing = false;
         }
+        button.setBounds(475, 10, 100, 50);
+        button.repaint();
     }
 
     private enum sq {
         e,
         x,
         o
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == button) {
+            playing = true;
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[i].length; j++) {   
+                    board[i][j] = sq.e;
+                }
+            }
+            currentTurn = sq.x;
+            repaint();
+        }
     }
 }
