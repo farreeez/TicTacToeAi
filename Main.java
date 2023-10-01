@@ -26,6 +26,7 @@ public class Main extends JPanel implements ActionListener {
                 gameCode(e.getX(), e.getY());
             }
         });
+        Bot bot = new Bot(2);
         button.setBounds(475, 10, 100, 50);
         button.addActionListener(this);
     }
@@ -175,6 +176,7 @@ public class Main extends JPanel implements ActionListener {
                     board[i][j] = sq.e;
                 }
             }
+            fullSqrCount = 0;
             currentTurn = sq.x;
             repaint();
         }
