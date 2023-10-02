@@ -26,9 +26,10 @@ public class Main extends JPanel implements ActionListener {
         frame.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                gameCode(e.getX(), e.getY());
-                int[] botSquare = bot.getPlay(board);
-                board[botSquare[0]][botSquare[1]] = botMove;
+                if (gameCode(e.getX(), e.getY())) {
+                    int[] botSquare = bot.getPlay(board);
+                    board[botSquare[0]][botSquare[1]] = botMove;
+                }
             }
         });
         button.setBounds(475, 10, 100, 50);
@@ -44,7 +45,8 @@ public class Main extends JPanel implements ActionListener {
         frame.setVisible(true);
     }
 
-    private void gameCode(int x, int y) {
+    private boolean gameCode(int x, int y) {
+        boolean played = false;
         if (playing) {
             if (x >= 0 && x <= 600 && y > 120 && y <= 730) {
                 y -= 120;
@@ -53,6 +55,7 @@ public class Main extends JPanel implements ActionListener {
                     int row = y / 200;
                     int col = x / 200;
                     if (board[row][col].equals(sq.e)) {
+                        played = true;
                         board[row][col] = player;
                         fullSqrCount++;
                         repaint();
@@ -60,6 +63,7 @@ public class Main extends JPanel implements ActionListener {
                 }
             }
         }
+        return played;
     }
 
     private boolean won(sq sqr) {
@@ -171,7 +175,7 @@ public class Main extends JPanel implements ActionListener {
         if (e.getSource() == button) {
             playing = true;
             for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board[i].length; j++) {   
+                for (int j = 0; j < board[i].length; j++) {
                     board[i][j] = sq.e;
                 }
             }

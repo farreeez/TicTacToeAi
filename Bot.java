@@ -20,14 +20,33 @@ public class Bot {
             states.put(i, arr);
         }
         solveGame();
+        // Main.sq[][] board = { { Main.sq.x, Main.sq.o, Main.sq.x },
+        // { Main.sq.e, Main.sq.e, Main.sq.e },
+        // { Main.sq.e, Main.sq.e, Main.sq.e } };
+        // // System.out.println(getPlay(board)[0]);
+        // // System.out.println(getPlay(board)[1]);
+        // // System.out.println(getCount(toTernary(11664, null), '0'));
+        // char[] oldBoard = { '1', '2', '1', '0', '0', '0', '0', '0', '0' };
+        char[] actions = toTernary(6561, null);
+        for (int i = 0; i < actions.length; i++) {
+        // System.out.println(actions[i]);
+        }
+
+        // System.out.println(ternaryToDecimal(toTernary(100, null)));
+
+        // for (int i = 0; i < total; i++) {
+        //     if (states.get(i)[0] != 0) {
+        //         System.out.println(states.get(i)[0]);
+        //     }
+        // }
     }
 
     public int[] getPlay(Main.sq[][] board) {
         int state = boardToDecimal(board);
         int square = (int) states.get(state)[0];
-        int squareY = square/3;
-        int squareX = square%3;
-        int[] squarePos = {squareY, squareX};
+        int squareY = square / 3;
+        int squareX = square % 3;
+        int[] squarePos = { squareY, squareX };
         return squarePos;
     }
 
@@ -58,30 +77,30 @@ public class Bot {
         while (true) {
             boolean isSame = true;
             for (int i = 0; i < total; i++) {
-                int[] actions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                char[] board = toTernary(i, actions);
+                int[] actions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };//
+                char[] board = toTernary(i, actions);//
 
-                if (isPossibleBoard(board)) {
+                if (isPossibleBoard(board)) {//
                     double[] actionValues = new double[9];
-                    int emptyCells = getCount(board, '0') - 1;
-                    double probability = 1.0 / emptyCells;
+                    int emptyCells = getCount(board, '0') - 1;//
+                    double probability = 1.0 / emptyCells;//
 
                     double oldAction = states.get(i)[0];
 
                     for (int j = 0; j < actions.length; j++) {
                         if (actions[j] != 0) {
                             for (int k = 0; k < emptyCells; k++) {
-                                char[] newStateTernary = getNewState(board, actions[j], k);
-                                int newStateInt = ternaryToDecimal(newStateTernary);
+                                char[] newStateTernary = getNewState(board, j, k);//
+                                int newStateInt = ternaryToDecimal(newStateTernary);//
                                 actionValues[j] = probability
                                         * (reward(newStateTernary) + gamma * states.get(newStateInt)[1]);
                             }
                         } else {
-                            actionValues[j] = -10000000;
+                            actionValues[j] = -10;
                         }
                     }
 
-                    int newOptAction = actions[max(actionValues)];
+                    int newOptAction = max(actionValues);
 
                     if (isSame) {
                         isSame = newOptAction == oldAction;
@@ -90,6 +109,14 @@ public class Bot {
                     double[] newState = { newOptAction, actionValues[max(actionValues)] };
 
                     states.replace(i, newState);
+                    if(i == 6561){
+                        for(int z = 0; z < actionValues.length; z++){
+                            System.out.print(actionValues[z] + ", ");
+                        }
+                        System.out.println();
+                        System.out.println(newOptAction);
+                        
+                    }
                 }
             }
 
@@ -150,8 +177,8 @@ public class Bot {
 
         while (num != 0) {
             ternary[pos] = Character.forDigit(num % 3, 3);
-            if (actions != null) {
-                actions[pos] = num % 3;
+            if (actions != null && num % 3 > 0) {
+                actions[pos] = 0;
             }
             pos--;
             num /= 3;
@@ -164,7 +191,7 @@ public class Bot {
         int max = 0;
 
         for (int i = 1; i < arr.length; i++) {
-            if (arr[i] > max) {
+            if (arr[i] > arr[max]) {
                 max = i;
             }
         }
@@ -184,7 +211,7 @@ public class Bot {
 
     private char[] getNewState(char[] oldBoard, int action, int emptyCell) {
         char[] board = Arrays.copyOf(oldBoard, oldBoard.length);
-        board[action - 1] = bot;
+        board[action] = bot;
         int emptyPos = 0;
         for (int i = 0; i < board.length; i++) {
             if (board[i] == '0') {
@@ -200,9 +227,12 @@ public class Bot {
 
     private int ternaryToDecimal(char[] ternary) {
         int decimal = 0;
+        int power = 8;
 
         for (int i = 0; i < ternary.length; i++) {
-            decimal += (int) Math.pow((int) ternary[i] - (int) '0', i);
+            int currentSquare = (int) ternary[i] - (int) '0';
+            decimal += ((int) (Math.pow(3, power))) * currentSquare;
+            power--;
         }
 
         return decimal;
