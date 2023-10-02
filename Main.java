@@ -29,6 +29,7 @@ public class Main extends JPanel implements ActionListener {
                 if (gameCode(e.getX(), e.getY())) {
                     int[] botSquare = bot.getPlay(board);
                     if (botSquare[0] > -1) {
+                        fullSqrCount++;
                         board[botSquare[0]][botSquare[1]] = botMove;
                     }
                 }
