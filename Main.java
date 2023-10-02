@@ -28,7 +28,9 @@ public class Main extends JPanel implements ActionListener {
             public void mousePressed(MouseEvent e) {
                 if (gameCode(e.getX(), e.getY())) {
                     int[] botSquare = bot.getPlay(board);
-                    board[botSquare[0]][botSquare[1]] = botMove;
+                    if (botSquare[0] > -1) {
+                        board[botSquare[0]][botSquare[1]] = botMove;
+                    }
                 }
             }
         });

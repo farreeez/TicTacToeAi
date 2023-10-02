@@ -29,23 +29,34 @@ public class Bot {
         // char[] oldBoard = { '1', '2', '1', '0', '0', '0', '0', '0', '0' };
         char[] actions = toTernary(6561, null);
         for (int i = 0; i < actions.length; i++) {
-        // System.out.println(actions[i]);
+            // System.out.println(actions[i]);
         }
 
         // System.out.println(ternaryToDecimal(toTernary(100, null)));
 
         // for (int i = 0; i < total; i++) {
-        //     if (states.get(i)[0] != 0) {
-        //         System.out.println(states.get(i)[0]);
-        //     }
+        // if (states.get(i)[0] != 0) {
+        // System.out.println(states.get(i)[0]);
         // }
+        // }
+
+        System.out.println(reward(toTernary(14427, null)));
     }
 
     public int[] getPlay(Main.sq[][] board) {
         int state = boardToDecimal(board);
         int square = (int) states.get(state)[0];
-        int squareY = square / 3;
-        int squareX = square % 3;
+        int squareY;
+        int squareX;
+
+        if (square > -1) {
+            squareY = square / 3;
+            squareX = square % 3;
+        } else {
+            squareX = -1;
+            squareY = -1;
+        }
+
         int[] squarePos = { squareY, squareX };
         return squarePos;
     }
@@ -81,41 +92,59 @@ public class Bot {
                 char[] board = toTernary(i, actions);//
 
                 if (isPossibleBoard(board)) {//
-                    double[] actionValues = new double[9];
-                    int emptyCells = getCount(board, '0') - 1;//
-                    double probability = 1.0 / emptyCells;//
+                    if (boardContainsEmpty(board)) {
+                        double[] actionValues = new double[9];
+                        int emptyCells = getCount(board, '0') - 1;//
+                        double probability = 1.0 / emptyCells;//
 
-                    double oldAction = states.get(i)[0];
+                        double oldAction = states.get(i)[0];
 
-                    for (int j = 0; j < actions.length; j++) {
-                        if (actions[j] != 0) {
-                            for (int k = 0; k < emptyCells; k++) {
-                                char[] newStateTernary = getNewState(board, j, k);//
-                                int newStateInt = ternaryToDecimal(newStateTernary);//
-                                actionValues[j] = probability
-                                        * (reward(newStateTernary) + gamma * states.get(newStateInt)[1]);
+                        for (int j = 0; j < actions.length; j++) {
+                            if (actions[j] != 0) {
+                                for (int k = 0; k < emptyCells; k++) {
+                                    char[] newStateTernary = getNewState(board, j, k);//
+                                    if (i == 13932 && j == 3 && k == 2) {
+                                        for (int z = 0; z < newStateTernary.length; z++) {
+                                            System.out.print(newStateTernary[z] + ", ");
+                                        }
+                                        System.out.println();
+                                        System.out.println("-----------------------");
+                                    }
+                                    int newStateInt = ternaryToDecimal(newStateTernary);//
+                                    actionValues[j] = probability
+                                            * (reward(newStateTernary) + gamma * states.get(newStateInt)[1]);
+                                }
+                            } else {
+                                actionValues[j] = -10;
                             }
-                        } else {
-                            actionValues[j] = -10;
                         }
-                    }
 
-                    int newOptAction = max(actionValues);
+                        int newOptAction = max(actionValues);
 
-                    if (isSame) {
-                        isSame = newOptAction == oldAction;
-                    }
-
-                    double[] newState = { newOptAction, actionValues[max(actionValues)] };
-
-                    states.replace(i, newState);
-                    if(i == 6561){
-                        for(int z = 0; z < actionValues.length; z++){
-                            System.out.print(actionValues[z] + ", ");
+                        if (isSame) {
+                            isSame = newOptAction == oldAction;
                         }
-                        System.out.println();
-                        System.out.println(newOptAction);
-                        
+
+                        double[] newState = { newOptAction, actionValues[max(actionValues)] };
+
+                        states.replace(i, newState);
+                        if (i == 13932) {
+                            for (int z = 0; z < actionValues.length; z++) {
+                                System.out.print(actionValues[z] + ", ");
+                            }
+                            System.out.println();
+                            System.out.println(newOptAction);
+                        }
+                    } else {
+                        // if(i == 18625){
+                        // for (int z = 0; z < board.length; z++) {
+                        // System.out.print(board[z] + ", ");
+                        // }
+                        // System.out.println();
+                        // System.out.println(reward(board));
+                        // }
+                        double[] newState = { -1, reward(board) };
+                        states.replace(i, newState);
                     }
                 }
             }
@@ -126,11 +155,20 @@ public class Bot {
         }
     }
 
+    private boolean boardContainsEmpty(char[] board) {
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == '0') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Double reward(char[] state) {
         if (reward(state, bot)) {
             return 1.0;
         } else if (reward(state, player)) {
-            return -1.0;
+            return -10000000.0;
         }
 
         return 0.0;
@@ -138,9 +176,9 @@ public class Bot {
 
     private boolean reward(char[] state, char currPlayer) {
         for (int i = 0; i < 3; i++) {
-            if (state[i] == currPlayer && state[i + 1] == currPlayer && state[i + 2] == currPlayer) {
+            if (state[i * 3] == currPlayer && state[i * 3 + 1] == currPlayer && state[i * 3 + 2] == currPlayer) {
                 return true;
-            } else if (state[i * 3] == currPlayer && state[i * 3 + 1] == currPlayer && state[i * 3 + 2] == currPlayer) {
+            } else if (state[i] == currPlayer && state[i + 3] == currPlayer && state[i + 6] == currPlayer) {
                 return true;
             }
         }
