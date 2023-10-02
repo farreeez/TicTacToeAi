@@ -10,7 +10,9 @@ public class Main extends JPanel implements ActionListener {
             { sq.e, sq.e, sq.e },
             { sq.e, sq.e, sq.e } };
 
-    private static sq currentTurn = sq.x;
+    private static sq player = sq.x;
+    private static sq botMove = sq.o;
+    private static Bot bot;
     static int fullSqrCount = 0;
     private static JFrame frame = new JFrame("Big Tac");
     private static JButton button = new JButton("Restart", null);
@@ -20,13 +22,15 @@ public class Main extends JPanel implements ActionListener {
     public Main() {
         setFocusable(true);
         setPreferredSize(new Dimension(600, 700));
+        bot = new Bot(2);
         frame.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 gameCode(e.getX(), e.getY());
+                int[] botSquare = bot.getPlay(board);
+                board[botSquare[0]][botSquare[1]] = botMove;
             }
         });
-        Bot bot = new Bot(2);
         button.setBounds(475, 10, 100, 50);
         button.addActionListener(this);
     }
@@ -49,12 +53,7 @@ public class Main extends JPanel implements ActionListener {
                     int row = y / 200;
                     int col = x / 200;
                     if (board[row][col].equals(sq.e)) {
-                        board[row][col] = currentTurn;
-                        if (currentTurn.equals(sq.x)) {
-                            currentTurn = sq.o;
-                        } else {
-                            currentTurn = sq.x;
-                        }
+                        board[row][col] = player;
                         fullSqrCount++;
                         repaint();
                     }
@@ -110,7 +109,7 @@ public class Main extends JPanel implements ActionListener {
         g.drawLine(0, 500, 600, 500);
 
         g2.setStroke(new BasicStroke(15));
-        if (currentTurn.equals(sq.x)) {
+        if (player.equals(sq.x)) {
             g.drawLine(25, 25, 75, 75);
             g.drawLine(75, 25, 25, 75);
         } else {
@@ -161,7 +160,7 @@ public class Main extends JPanel implements ActionListener {
         button.repaint();
     }
 
-    private enum sq {
+    public static enum sq {
         e,
         x,
         o
@@ -177,7 +176,6 @@ public class Main extends JPanel implements ActionListener {
                 }
             }
             fullSqrCount = 0;
-            currentTurn = sq.x;
             repaint();
         }
     }

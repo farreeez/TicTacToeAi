@@ -22,6 +22,38 @@ public class Bot {
         solveGame();
     }
 
+    public int[] getPlay(Main.sq[][] board) {
+        int state = boardToDecimal(board);
+        int square = (int) states.get(state)[0];
+        int squareY = square/3;
+        int squareX = square%3;
+        int[] squarePos = {squareY, squareX};
+        return squarePos;
+    }
+
+    private int boardToDecimal(Main.sq[][] board) {
+        double decimalValue = 0;
+        int power = 8;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                int currentSquare = getNumValue(board[i][j]);
+                decimalValue += currentSquare * Math.pow(3, power);
+                power--;
+            }
+        }
+        return (int) decimalValue;
+    }
+
+    private int getNumValue(Main.sq play) {
+        if (play.equals(Main.sq.x)) {
+            return 1;
+        } else if (play.equals(Main.sq.o)) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
     private void solveGame() {
         while (true) {
             boolean isSame = true;
@@ -62,7 +94,7 @@ public class Bot {
             }
 
             if (isSame) {
-            break;
+                break;
             }
         }
     }
