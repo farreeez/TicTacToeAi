@@ -19,6 +19,7 @@ public class Bot {
             double[] arr = { 0, 0 };
             states.put(i, arr);
         }
+        solveGame();
     }
 
     private void solveGame() {
@@ -30,15 +31,18 @@ public class Bot {
 
                 if (isPossibleBoard(board)) {
                     double[] actionValues = new double[9];
-                    double probability = 0;
                     int emptyCells = getCount(board, '0') - 1;
+                    double probability = 1.0 / emptyCells;
 
-                    double[] oldState = states.get(i);
+                    double oldAction = states.get(i)[0];
 
                     for (int j = 0; j < actions.length; j++) {
                         if (actions[j] != 0) {
                             for (int k = 0; k < emptyCells; k++) {
-                                actionValues[j] += probability * (reward() + gamma * oldState[1]);
+                                char[] newStateTernary = getNewState(board, actions[j], k);
+                                int newStateInt = ternaryToDecimal(newStateTernary);
+                                actionValues[j] = probability
+                                        * (reward(newStateTernary) + gamma * states.get(newStateInt)[1]);
                             }
                         } else {
                             actionValues[j] = -10000000;
@@ -48,7 +52,7 @@ public class Bot {
                     int newOptAction = actions[max(actionValues)];
 
                     if (isSame) {
-                        isSame = newOptAction == oldState[0];
+                        isSame = newOptAction == oldAction;
                     }
 
                     double[] newState = { newOptAction, actionValues[max(actionValues)] };
@@ -58,13 +62,37 @@ public class Bot {
             }
 
             if (isSame) {
-                break;
+            break;
             }
         }
     }
 
-    private Double reward() {
-        return null;
+    private Double reward(char[] state) {
+        if (reward(state, bot)) {
+            return 1.0;
+        } else if (reward(state, player)) {
+            return -1.0;
+        }
+
+        return 0.0;
+    }
+
+    private boolean reward(char[] state, char currPlayer) {
+        for (int i = 0; i < 3; i++) {
+            if (state[i] == currPlayer && state[i + 1] == currPlayer && state[i + 2] == currPlayer) {
+                return true;
+            } else if (state[i * 3] == currPlayer && state[i * 3 + 1] == currPlayer && state[i * 3 + 2] == currPlayer) {
+                return true;
+            }
+        }
+
+        if (state[0] == currPlayer && state[4] == currPlayer && state[8] == currPlayer) {
+            return true;
+        } else if (state[6] == currPlayer && state[4] == currPlayer && state[2] == currPlayer) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isPossibleBoard(char[] board) {
@@ -138,4 +166,13 @@ public class Bot {
         return board;
     }
 
+    private int ternaryToDecimal(char[] ternary) {
+        int decimal = 0;
+
+        for (int i = 0; i < ternary.length; i++) {
+            decimal += (int) Math.pow((int) ternary[i] - (int) '0', i);
+        }
+
+        return decimal;
+    }
 }
