@@ -20,27 +20,6 @@ public class Bot {
             states.put(i, arr);
         }
         solveGame();
-        // Main.sq[][] board = { { Main.sq.x, Main.sq.o, Main.sq.x },
-        // { Main.sq.e, Main.sq.e, Main.sq.e },
-        // { Main.sq.e, Main.sq.e, Main.sq.e } };
-        // // System.out.println(getPlay(board)[0]);
-        // // System.out.println(getPlay(board)[1]);
-        // // System.out.println(getCount(toTernary(11664, null), '0'));
-        // char[] oldBoard = { '1', '2', '1', '0', '0', '0', '0', '0', '0' };
-        char[] actions = toTernary(6561, null);
-        for (int i = 0; i < actions.length; i++) {
-            // System.out.println(actions[i]);
-        }
-
-        // System.out.println(ternaryToDecimal(toTernary(100, null)));
-
-        // for (int i = 0; i < total; i++) {
-        // if (states.get(i)[0] != 0) {
-        // System.out.println(states.get(i)[0]);
-        // }
-        // }
-
-        System.out.println(reward(toTernary(14427, null)));
     }
 
     public int[] getPlay(Main.sq[][] board) {
@@ -84,72 +63,55 @@ public class Bot {
         }
     }
 
+    // private void printArray(double[] array) {
+    //     System.out.println();
+    //     for (int i = 0; i < array.length; i++) {
+    //         System.out.print(array[i] + ", ");
+    //     }
+    //     System.out.println();
+    //     System.out.println("-----------------");
+    // }
+
     private void solveGame() {
         while (true) {
-            boolean isSame = true;
+            boolean stop = true;
+            double oldAction = 0;
+            double newAction = 0;
             for (int i = 0; i < total; i++) {
-                int[] actions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };//
-                char[] board = toTernary(i, actions);//
-
-                if (isPossibleBoard(board)) {//
-                    if (boardContainsEmpty(board)) {
-                        double[] actionValues = new double[9];
-                        int emptyCells = getCount(board, '0') - 1;//
-                        double probability = 1.0 / emptyCells;//
-
-                        double oldAction = states.get(i)[0];
-
+                int[] actions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                double[] actionRewards = { -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000 };
+                char[] board = toTernary(i, actions);
+                int emptyCells = getCount(board, '0') - 1;
+                double probability = 1.0 / emptyCells;
+                if (isPossibleBoard(board)) {
+                    oldAction = states.get(i)[1];
+                    if (boardContainsEmpty(board) && reward(board) == 0) {
                         for (int j = 0; j < actions.length; j++) {
                             if (actions[j] != 0) {
+                                actionRewards[j] = 0;
                                 for (int k = 0; k < emptyCells; k++) {
-                                    char[] newStateTernary = getNewState(board, j, k);//
-                                    if (i == 13932 && j == 3 && k == 2) {
-                                        for (int z = 0; z < newStateTernary.length; z++) {
-                                            System.out.print(newStateTernary[z] + ", ");
-                                        }
-                                        System.out.println();
-                                        System.out.println("-----------------------");
-                                    }
-                                    int newStateInt = ternaryToDecimal(newStateTernary);//
-                                    actionValues[j] = probability
-                                            * (reward(newStateTernary) + gamma * states.get(newStateInt)[1]);
+                                    char[] newBoard = getNewState(board, j, k);
+                                    actionRewards[j] += probability
+                                            * (reward(newBoard) + gamma * states.get(ternaryToDecimal(newBoard))[1]);
                                 }
-                            } else {
-                                actionValues[j] = -10;
                             }
                         }
-
-                        int newOptAction = max(actionValues);
-
-                        if (isSame) {
-                            isSame = newOptAction == oldAction;
-                        }
-
-                        double[] newState = { newOptAction, actionValues[max(actionValues)] };
-
+                        int max = max(actionRewards);
+                        
+                        double[] newState = { max, actionRewards[max] };
                         states.replace(i, newState);
-                        if (i == 13932) {
-                            for (int z = 0; z < actionValues.length; z++) {
-                                System.out.print(actionValues[z] + ", ");
-                            }
-                            System.out.println();
-                            System.out.println(newOptAction);
-                        }
                     } else {
-                        // if(i == 18625){
-                        // for (int z = 0; z < board.length; z++) {
-                        // System.out.print(board[z] + ", ");
-                        // }
-                        // System.out.println();
-                        // System.out.println(reward(board));
-                        // }
                         double[] newState = { -1, reward(board) };
                         states.replace(i, newState);
+                    }
+                    newAction = states.get(i)[1];
+                    if (stop) {
+                        stop = oldAction == newAction;
                     }
                 }
             }
 
-            if (isSame) {
+            if (stop) {
                 break;
             }
         }
@@ -168,7 +130,7 @@ public class Bot {
         if (reward(state, bot)) {
             return 1.0;
         } else if (reward(state, player)) {
-            return -10000000.0;
+            return -1.0;
         }
 
         return 0.0;
