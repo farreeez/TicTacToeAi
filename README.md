@@ -1,10 +1,10 @@
 # TicTacToeAi
 
-This project is a Tic-tac-toe game run using Java Swing, where you can play against an undefeatable AI created using a dynamic programming concept called value iteration.
+This project is a Tic-tac-toe game run using Java Swing, where you can play against an unbeatable AI created using a dynamic programming concept called value iteration.
 
 ## Description
 
-The primary goal of this project was to solidify my understanding of reinforcement learning concepts through practical application. In this game, value iteration is utilized to enable the AI to make optimal decisions by iteratively updating the value of each game state based on possible future rewards, ensuring it always selects the best move to prevent losing.
+The primary goal of this project was to solidify my understanding of reinforcement learning concepts through practical application. In this game, value iteration is utilised to enable the AI to make optimal decisions by iteratively updating the value of each game state based on possible future rewards, ensuring it always selects the best move to prevent losing.
 
 ### Dependencies
 This project requires the following dependencies:
