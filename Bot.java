@@ -63,15 +63,6 @@ public class Bot {
         }
     }
 
-    // private void printArray(double[] array) {
-    //     System.out.println();
-    //     for (int i = 0; i < array.length; i++) {
-    //         System.out.print(array[i] + ", ");
-    //     }
-    //     System.out.println();
-    //     System.out.println("-----------------");
-    // }
-
     private void solveGame() {
         while (true) {
             boolean stop = true;
