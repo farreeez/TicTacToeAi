@@ -1,31 +1,25 @@
 # TicTacToeAi
 
-Simple overview of use/purpose.
+This project is a Tic-tac-toe game run using Java Swing, where you can play against an undefeatable AI created using a dynamic programming concept called value iteration.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
-
-## Getting Started
+The primary goal of this project was to solidify my understanding of reinforcement learning concepts through practical application. In this game, value iteration is utilized to enable the AI to make optimal decisions by iteratively updating the value of each game state based on possible future rewards, ensuring it always selects the best move to prevent losing.
 
 ### Dependencies
+This project requires the following dependencies:
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* Java Development Kit (JDK)
+* Java Swing
+
+Make sure you have the JDK installed and properly configured on your system, as well as the Java Swing library, which is typically included with the JDK.
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
+* simply run the Main.java file and enjoy :).
 
 ## Acknowledgments
 
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+These resources helped me immensely in the creation of this project.
+* [Reinforcement Learning By Richard S, Sutton and Andrew G, Barto](https://www.amazon.com.au/Reinforcement-Learning-Introduction-Richard-Sutton/dp/0262039249/ref=sr_1_1?crid=2JNNPOF0NR79T&dib=eyJ2IjoiMSJ9.RL_QpFZo8-81d0jfpc35DrW-nThf5cRzrBQjfSTnJ7AEg4cvXxbS1RL3v9gsX-zIKnR7ctM8zDCZeRXCbddyE6ZOExU7sZSw75KU63_eqIkEfJgWv9bqeh8PupIoEnrIbbreKcHf4yDCmGAy5I08cc6_QJu8Bbt34CVzY1RVr-5ADaResWK3CBafMvtiG_po.jOmeGGABeVfzVAZo24qyBSHRSXNh66EWs4za48E3ZCU&dib_tag=se&keywords=reinforcement+learning+richard+sutton&qid=1720594036&s=books&sprefix=reinforcement+learning+richard+sutton%2Cstripbooks%2C209&sr=1-1)
+* [Steve Brunton's YouTube channel](https://www.youtube.com/@Eigensteve/featured)
